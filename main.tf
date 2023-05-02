@@ -31,7 +31,6 @@ provider "snowflake" {
   account  = "noefgcv-jv58472"
   username = "andy"
   password = data.azurerm_key_vault_secret.snowflake_password.value
-  #region   = "eu-west-2" #"uk-south" # e.g., "us-west-2"
 }
 
 # Create a Snowflake database
@@ -57,4 +56,37 @@ output "database_name" {
 
 output "warehouse_name" {
   value = snowflake_warehouse.example.name
+}
+
+resource "snowflake_schema" "test_schema" {
+  database = snowflake_database.example.name
+  name     = "test_schema"
+}
+
+output "schema_name" {
+  value = snowflake_schema.test_schema.name
+}
+
+resource "snowflake_table" "test_table" {
+  database = snowflake_database.example.name
+  schema   = snowflake_schema.test_schema.name
+  name     = "test_table"
+
+  column {
+    name = "column1"
+    type = "VARCHAR"
+  }
+  column {
+    name = "column2"
+    type = "INTEGER"
+  }
+
+    column {
+    name = "column3"
+    type = "INTEGER"
+  }
+}
+
+output "table_name" {
+  value = snowflake_table.test_table.name
 }
